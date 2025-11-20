@@ -1,4 +1,3 @@
-// Main.java
 public class Main {
     public static void main(String[] args) {
         try {
@@ -33,6 +32,9 @@ public class Main {
 
         // Дополнительные демонстрации
         demonstrateAdditionalFeatures(lion, elephant, snake);
+
+        // Демонстрация работы персонала
+        demonstrateStaffWork(bigCatsEnclosure, reptilesEnclosure, lion, elephant, snake);
     }
 
     private static void demonstrateAbstractClassInstantiation() {
@@ -111,6 +113,75 @@ public class Main {
             elephant.setWeight(0); // Попытка установить нулевой вес
         } catch (IllegalArgumentException e) {
             System.out.println("Ошибка при установке веса: " + e.getMessage());
+        }
+    }
+
+    private static void demonstrateStaffWork(Enclosure bigCatsEnclosure,
+                                             Enclosure reptilesEnclosure,
+                                             Lion lion, Elephant elephant, Snake snake) {
+        System.out.println("\n" + "=".repeat(50));
+        System.out.println("РАБОТА ПЕРСОНАЛА ЗООПАРКА");
+        System.out.println("=".repeat(50));
+
+        // Создание сотрудников
+        Veterinarian vet = new Veterinarian("Доктор Иванов", "VET-12345", 75000, 8);
+        Zookeeper keeper1 = new Zookeeper("Петр Сидоров", "хищники", 45000, 1);
+        Zookeeper keeper2 = new Zookeeper("Мария Козлова", "травоядные и рептилии", 42000, 2);
+
+        // Демонстрация инкапсуляции через геттеры
+        System.out.println("\n--- ИНФОРМАЦИЯ О СОТРУДНИКАХ ---");
+        System.out.println(vet.toString());
+        System.out.println(keeper1.toString());
+        System.out.println(keeper2.toString());
+
+        // Демонстрация полиморфизма через интерфейс Staff
+        System.out.println("\n--- ПОЛИМОРФИЗМ: РАБОТА СОТРУДНИКОВ ---");
+        Staff[] staffMembers = {vet, keeper1, keeper2};
+
+        for (Staff staff : staffMembers) {
+            System.out.println("\n" + staff.getPosition() + " начинает работу:");
+            staff.work();
+            staff.cleanEnclosure(bigCatsEnclosure);
+        }
+
+        // Демонстрация специфических методов ветеринара
+        System.out.println("\n--- РАБОТА ВЕТЕРИНАРА ---");
+        vet.examineAnimal(lion);
+        vet.examineAnimal(elephant);
+        vet.examineAnimal(snake);
+        vet.administerVaccine(lion, "Комплексная вакцина для кошачьих");
+
+        // Демонстрация работы смотрителей
+        System.out.println("\n--- РАБОТА СМОТРИТЕЛЕЙ ---");
+        keeper1.feedAnimalsInEnclosure(bigCatsEnclosure);
+        keeper1.checkEnclosureSecurity(bigCatsEnclosure);
+
+        keeper2.feedAnimalsInEnclosure(reptilesEnclosure);
+        keeper2.checkEnclosureSecurity(reptilesEnclosure);
+
+        // Демонстрация полиморфного использования животных
+        System.out.println("\n--- ПОЛИМОРФНОЕ ВЗАИМОДЕЙСТВИЕ ---");
+        demonstratePolymorphicInteraction(vet, new Animal[]{lion, elephant, snake});
+
+        // Демонстрация добавления животных обратно в вольеры для полноты
+        System.out.println("\n--- ФИНАЛЬНОЕ СОСТОЯНИЕ ВОЛЬЕРОВ ---");
+        reptilesEnclosure.addAnimal(elephant); // Добавляем слона обратно
+        bigCatsEnclosure.displayAnimals();
+        reptilesEnclosure.displayAnimals();
+    }
+
+    private static void demonstratePolymorphicInteraction(Staff staff, Animal[] animals) {
+        System.out.println("Демонстрация полиморфного взаимодействия:");
+
+        for (Animal animal : animals) {
+            // Полиморфизм: один код работает с разными типами животных
+            System.out.println("\n--- Взаимодействие с " + animal.getClass().getSimpleName() + " ---");
+            animal.makeSound();
+            animal.feed();
+
+            if (staff instanceof Veterinarian) {
+                ((Veterinarian) staff).examineAnimal(animal);
+            }
         }
     }
 }
